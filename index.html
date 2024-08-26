@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אתר משחקים</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        .game {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input {
+            padding: 5px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#home">דף הבית</a>
+        <a href="#guess">ניחוש מספרים</a>
+        <a href="#rps">אבן נייר מספריים</a>
+    </nav>
+
+    <div class="container">
+        <div id="home">
+            <h1>ברוכים הבאים לאתר המשחקים</h1>
+            <p>בחרו משחק מהתפריט למעלה כדי להתחיל לשחק!</p>
+        </div>
+
+        <div id="guess" class="game" style="display:none;">
+            <h2>משחק ניחוש מספרים</h2>
+            <p>נסו לנחש את המספר בין 1 ל-100:</p>
+            <input type="number" id="guessInput" min="1" max="100">
+            <button onclick="checkGuess()">נחש</button>
+            <p id="guessResult"></p>
+        </div>
+
+        <div id="rps" class="game" style="display:none;">
+            <h2>אבן נייר מספריים</h2>
+            <p>בחרו את הצעד שלכם:</p>
+            <button onclick="playRPS('אבן')">אבן</button>
+            <button onclick="playRPS('נייר')">נייר</button>
+            <button onclick="playRPS('מספריים')">מספריים</button>
+            <p id="rpsResult"></p>
+        </div>
+    </div>
+
+    <script>
+        // ניווט
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelectorAll('.game').forEach(game => game.style.display = 'none');
+                document.querySelector(this.getAttribute('href')).style.display = 'block';
+            });
+        });
+
+        // משחק ניחוש מספרים
+        let targetNumber = Math.floor(Math.random() * 100) + 1;
+        let guesses = 0;
+
+        function checkGuess() {
+            const guess = parseInt(document.getElementById('guessInput').value);
+            guesses++;
+            const result = document.getElementById('guessResult');
+
+            if (guess === targetNumber) {
+                result.textContent = `כל הכבוד! ניחשת את המספר ב-${guesses} ניסיונות.`;
+                targetNumber = Math.floor(Math.random() * 100) + 1;
+                guesses = 0;
+            } else if (guess < targetNumber) {
+                result.textContent = 'נמוך מדי, נסה שוב.';
+            } else {
+                result.textContent = 'גבוה מדי, נסה שוב.';
+            }
+        }
+
+        // משחק אבן נייר מספריים
+        function playRPS(playerChoice) {
+            const choices = ['אבן', 'נייר', 'מספריים'];
+            const computerChoice = choices[Math.floor(Math.random() * 3)];
+            const result = document.getElementById('rpsResult');
+
+            if (playerChoice === computerChoice) {
+                result.textContent = `תיקו! שניכם בחרתם ${playerChoice}.`;
+            } else if (
+                (playerChoice === 'אבן' && computerChoice === 'מספריים') ||
+                (playerChoice === 'נייר' && computerChoice === 'אבן') ||
+                (playerChoice === 'מספריים' && computerChoice === 'נייר')
+            ) {
+                result.textContent = `ניצחת! ${playerChoice} מנצח ${computerChoice}.`;
+            } else {
+                result.textContent = `הפסדת. ${computerChoice} מנצח ${playerChoice}.`;
+            }
+        }
+    </script>
+</body>
+</html>
